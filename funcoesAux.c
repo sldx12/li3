@@ -92,7 +92,7 @@ int lista_valida(char v[]){
     temp=strdup(v);
     temp1=temp;
     while (temp1=strsep(temp,",")!=NULL){
-        if (atoi(&temp)>=0) c++;
+        if (atoi(temp)>=0) c++;
         else return -1;
     }
     return c;
