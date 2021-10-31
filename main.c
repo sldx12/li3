@@ -5,7 +5,6 @@
 #include <ctype.h>
 #include "funcoesAux.c"
 #include "types.h"
-
 GH_USER build_user(char *line) {
 	GH_USER u = malloc(sizeof(struct gh_user));
 	u->public_repos = strdup(strsep(&line, ";\n"));
@@ -20,95 +19,209 @@ GH_USER build_user(char *line) {
 	u->login=strdup(strsep(&line, ";\n"));
 	return u;
 }
+//Função que engloba as funções auxiliares e formata o ficheiro users.csv
 
-/*
-void print_user(GH_USER u) {
-	printf("id: %s | id: %s\n", u->id, u->public_repos);
-}
-*/
-/*
-int parser(char* buff) {
-	char *data;
-	char line[1024];
-	strcpy(line, data);
-	/*while ((data = strsep(&buff, ";")) != NULL){
-		 printf("%s ", data);
-    }
-	printf("\n");
-	for (int n = 0; n < 3; n++) {
-		data = strsep(&buff, ";");
-		if (nonNegativeInt(data) == 0) return 0;
-	}
-	
+void final_users(FILE *s, FILE *d) {
+	int colunas = 1;
+	int max_len = 400000;
+	char buff[max_len];
+	while (fgets(buff, max_len, s) != NULL ){
+		char *buff1;
+		char *buff2;
+        buff1=strdup(buff);
+		buff2=(strsep(&buff1,";"));
+		if(nonNegativeInt(buff2)==1) colunas++;
+		else colunas=9+colunas;
+		//printf("%%d\n",colunas);
+		//printf("%s\n",buff2);
+		if(string_valida(strdup(strsep(&buff1,";")))==1) colunas++;
+		else colunas=9+colunas;
+		//printf("%d%d\n",Bool,colunas);
+		//printf("%s\n",buff1);
+		if(type_correct(strdup(strsep(&buff1,";")))==1) colunas++;
+		else colunas=9+colunas;
+		//printf("%d%d\n",Bool,colunas);
+		//printf("%s\n",buff1);
+		if(check_date(strdup(strsep(&buff1,";")))==1) colunas++;
+		else colunas=9+colunas;
+		//printf("%d%d\n",Bool,colunas);
+		//printf("%s\n",buff1);
 		
-
-	return 0;
-}
-*/
-//Função final que recebe um documento,neste caso um users.c e devolve um ficheiro com as dados todos formatados por
-void final_users(FILE *c){
-    int colunas=1;
-    int Bool=1;
-    int max_len = 1024;
-	char buff[max_len];
-    while (fgets(buff,1024,c)!=NULL){
-        char *buff1;
-		buff1=strdup(buff);
-		//Testa se cada linha da tabela é válida
-		if(nonNegativeInt(strsep(&buff1,";"))==1) colunas++;
-		else Bool=0;
-		if(string_valida(strsep(&buff1,";"))==1) colunas++;
-		else Bool=0;
-		if(type_correct(strsep(&buff1,";"))==1) colunas++;
-		else Bool=0;
-		if(check_date(strsep(&buff1,";"))==1) colunas++;
-		else Bool=0;
-		if (atoi(strsep(&buff1,";"))==lista_valida(strsep(&buff1,";"))) colunas=colunas+2;
-		else Bool=0;
-		if (atoi(strsep(&buff1,";"))==lista_valida(strsep(&buff1,";"))) colunas=colunas+2;
-		else Bool=0;
-        if(nonNegativeInt(strsep(&buff1,";"))==1) colunas++;
-		else Bool=0;
-		if(nonNegativeInt(strsep(&buff1,";"))==1) colunas++;
-		else Bool=0;
-        //Testa se vai ou não copiar a linha para o ficheiro users-ok.csv"
-		if (Bool==1 && colunas==10) {
-			fprintf("users-ok.csv",&buff);
+		int x=atoi(strdup(strsep(&buff1,";")));
+		//printf("%d\n",x);
+        
+		if (x==lista_valida(strdup(strsep(&buff1,";")))) colunas=colunas+2;
+		else colunas=9+colunas;
+		//printf("%s\n",buff1);
+		//printf("%d%d\n",Bool,colunas);
+		int x1=atoi(strdup(strsep(&buff1,";")));
+		
+		if (x1==lista_valida(strdup(strsep(&buff1,";")))) colunas=colunas+2;
+		else colunas=9+colunas;
+		//printf("%s\n",buff1);
+		//printf("%d%d\n",Bool,colunas);
+        if(nonNegativeInt(strdup(strsep(&buff1,";")))==1) colunas++;
+		else colunas=9+colunas;
+		//printf("%s\n",buff1);
+		//printf("%d\n",colunas);
+		if(nonNegativeInt(strdup(strsep(&buff1,"\n")))==1) colunas++;
+		//printf("%d\n",nonNegativeInt(strdup(strsep(&buff1,"\n"))));
+		//printf("%d\n",colunas);
+        //printf("%s\n",buff);
+		if (colunas==10) {
+			fprintf(d,buff);
 		}
-		Bool=1;
 		colunas=1;
-	} 
+		
+	}
 }
 
-int main(int argc, char const *argv[]) {
-	FILE *us = fopen("users.csv", "r");
-	//FILE *c = fopen("commits.csv", "r");
-	//FILE *r = fopen("repos.csv", "r");
-    FILE *usOK= fopen("users-ok.csv","w");
-	int max_len = 1024;
+void final_repos(FILE *s, FILE *d) {
+	int colunas = 1;
+	int Bool = 1;
+	int max_len = 400000;
 	char buff[max_len];
-	//char *buff2;
-	// GH_USER array[101];
-	//int n = 0;	
-
-	if (us == NULL) return 1; // check if file is empty
-	
-	fgets(buff, 1024, us); // remove first line
-	fprintf(usOK,buff);
-    /*
-	while (fgets(buff,1024, us) != NULL) {
-		// array[n++] = build_user[buff];
-		parser(buff);	
+	int i=0;
+	while (fgets(buff, max_len, s) != NULL){
+		char *buff1;
+		char *buff2;
+        buff1=strdup(buff);
+		buff2=(strsep(&buff1,";"));
+		if(nonNegativeInt(buff2)==1) colunas++;
+		else Bool=0;
+		//printf("%d%d\n",Bool,colunas);
+		//printf("%s\n",buff2);
+		if(nonNegativeInt(strdup(strsep(&buff1,";")))==1) colunas++;
+		else Bool=0;
+		//printf("%d%d\n",Bool,colunas);
+        //printf("%s\n",buff1);
+		if(string_valida(strdup(strsep(&buff1,";")))==1) colunas++;
+		else Bool=0;
+		//printf("%d%d\n",Bool,colunas);
+		//printf("%s\n",buff1);
+		if(string_valida(strdup(strsep(&buff1,";")))==1) colunas++;
+		else Bool=0;
+		//printf("%d%d\n",Bool,colunas);
+		//printf("%s\n",buff1);
+        if(bool_correct(strdup(strsep(&buff1,";")))==1) colunas++;
+		else Bool=0;
+		//printf("%d%d\n",Bool,colunas);
+		//printf("%s\n",buff1);
+		if(string_valida(strdup(strsep(&buff1,";")))==1) colunas++;
+		else Bool=0;
+		//printf("%d%d\n",Bool,colunas);
+		//printf("%s\n",buff1);
+        if(string_valida(strdup(strsep(&buff1,";")))==1) colunas++;
+		else Bool=0;
+		//printf("%d%d\n",Bool,colunas);
+		//printf("%s\n",buff1);
+		if(string_valida(strdup(strsep(&buff1,";")))==1) colunas++;
+		else Bool=0;
+		//printf("%d%d\n",Bool,colunas);
+		//printf("%s\n",buff1);
+		if(check_date(strdup(strsep(&buff1,";")))==1) colunas++;
+		else Bool=0;
+		//printf("%d%d\n",Bool,colunas);
+		//printf("%s\n",buff1);
+		if(check_date(strdup(strsep(&buff1,";")))==1) colunas++;
+		else Bool=0;
+		//printf("%d%d\n",Bool,colunas);
+		//printf("%s\n",buff1);
+        if(nonNegativeInt(strdup(strsep(&buff1,";")))==1) colunas++;
+		else Bool=0;
+		//printf("%s\n",buff1);
+		//printf("%d%d\n",Bool,colunas);
+		if(nonNegativeInt(strdup(strsep(&buff1,";")))==1) colunas++;
+		else Bool=0;
+		//printf("%d%d\n",Bool,colunas);
+        //printf("%s\n",buff1);
+		if(nonNegativeInt(strdup(strsep(&buff1,";")))==1) colunas++;
+		else Bool=0;
+		//printf("%d%d\n",Bool,colunas);
+        //printf("%s\n",buff1);
+		if(nonNegativeInt(strdup(strsep(&buff1,"\n")))==1) colunas++;
+		else Bool=0;
+		//printf("%d%d\n",Bool,colunas);
+		if (colunas==15) {
+			//printf("%s\n\n",buff);
+			//printf("%d\n",i);
+			fprintf(d,buff);
+		}
+		colunas=1;
+		Bool=1;
 	}
-	*/
-    //
-	/*for (int j = 0; j < n; j++) {
-		print_user(array[j]);
-	}*/
-	final_users(us);
+}
+
+void final_commits(FILE *s, FILE *d) {
+	int colunas = 1;
+	int Bool = 1;
+	int max_len = 400000;
+	char buff[max_len];
+	int i=0;
+	while (fgets(buff, max_len, s) != NULL){
+		char *buff1;
+		char *buff2;
+        buff1=strdup(buff);
+		buff2=(strsep(&buff1,";"));
+		if(nonNegativeInt(buff2)==1) colunas++;
+		else Bool=0;
+		//printf("%d%d\n",Bool,colunas);
+		//printf("%s\n",buff2);
+		if(nonNegativeInt(strdup(strsep(&buff1,";")))==1) colunas++;
+		else Bool=0;
+		//printf("%d%d\n",Bool,colunas);
+        //printf("%s\n",buff1);
+		if(nonNegativeInt(strdup(strsep(&buff1,";")))==1) colunas++;
+		else Bool=0;
+	    //printf("%s\n",buff1);
+		//printf("%d%d\n",Bool,colunas);
+		if(check_date(strdup(strsep(&buff1,";")))==1) colunas++;
+		else Bool=0;
+		//printf("%d%d\n",Bool,colunas);
+		//printf("%s\n",buff1);
+		if(string_valida(strdup(strsep(&buff1,";")))==1) colunas++;
+		else Bool=0;
+		//printf("%d%d\n",Bool,colunas);
+
+		if (colunas==6) {
+			//printf("%s\n\n",buff);
+			//printf("%d\n",i);
+			fprintf(d,buff);
+		}
+		colunas=1;
+		Bool=1;
+		
+	}
+}
+//Função principal do programa 
+int main() {
+	FILE *us = fopen("users.csv", "r");
+	FILE *usOK = fopen("users-ok.csv", "w");
+	FILE *repos=fopen("repos.csv", "r");
+	FILE *reposOK=fopen("repos-ok.csv", "w");
+    FILE *commits=fopen("commits.csv", "r");
+	FILE *commitsOK=fopen("commits-ok.csv", "w");
+
+	int max_len = 400000;
+	char buff[max_len];
+
+	if (us == NULL) return 1;
+	fgets(buff, max_len, us);
+	fprintf(usOK, buff);
+	if (repos==NULL) return 1;
+	fgets(buff,max_len,repos);
+	fprintf(reposOK, buff);
+	if (commits==NULL) return 1;
+	fgets(buff,max_len,commits);
+	fprintf(commitsOK,buff);
+	final_users(us, usOK);
+	final_repos(repos,reposOK);
+	final_commits(commits,commitsOK);
 	fclose(us);
-	//fclose(c);
-	//fclose(r);
+	fclose(usOK);
+	fclose(repos);
+	fclose(reposOK);
+	fclose(commits);
+	fclose(commitsOK);
 	return 0;
 }
-

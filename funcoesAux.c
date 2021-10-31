@@ -68,22 +68,24 @@ int check_date(char *d) { // 07-04-2005 <= d <= current_time
     int c_day = timeinfo->tm_mday;
     int c_hour = timeinfo->tm_hour;
     int c_min = timeinfo->tm_min;
-
+    
     if (year > 2005 && year < c_year) return 1;
     if (year == 2005 && mon > 4) return 1;
     if (year == c_year && mon < c_mon) return 1;
     if (year == 2005 && mon == 4 && day >= 7) return 1;
     if (year == c_year && mon == c_mon && day < c_day) return 1;
     if (year == c_year && mon == c_mon && day == c_day && hour < c_hour) return 1;
-    if (year == c_year && mon == c_mon && day == c_day && hour == c_hour && min < c_min) return 1;
+    if (year == c_year && mon == c_mon && day == c_day &&  hour == c_hour && min < c_min) return 1;
     return 0;
 }
 //Função que vê se uma string é valida
 int string_valida(char v[]){
-    if (v == NULL) return 0;
+    if (strlen(v)==0) return 0;
     else return 1;
 }
+
 //Função que testa se uma lista é valida.Caso seja dá o seu comprimento, caso não seja dá -1 (inacaba)
+/*
 int lista_valida(char v[]){
     v=v+1;// Para retirar o '[';
     int c=0; // Para calcular o comprimento
@@ -91,11 +93,27 @@ int lista_valida(char v[]){
     char *temp1;
     temp=strdup(v);
     temp1=temp;
-    while (temp1=strsep(temp,",")!=NULL){
-        if (atoi(temp)>=0) c++;
-        else return -1;
+    if (v[0]==']') return 0;
+    else{
+      while ((temp1=strsep(&temp,","))!=NULL){
+          if (atoi(temp)>=0) c++;
+          else return -1;
+      }
     }
     return c;
+}
+*/ 
+int lista_valida(char v[]){
+    int i=0;
+    int r=0;
+    if (v[1]==']') return 0;
+    else{
+        while(v[i]!=NULL){
+            if (v[i]==',') r++;
+            i++;
+        }
+    }
+    return r+1;
 }
 
 /*
