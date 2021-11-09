@@ -47,7 +47,7 @@ int main() {
 	FILE *reposf=fopen("repos-final.csv","w");
 	FILE *commitsok1=fopen("commits-ok.csv","r");
 	FILE *commitsf=fopen("commits-final.csv","w");
-    FILE *commitsint=fopen("commits-int.csv","w");
+    //FILE *commitsint=fopen("commits-int.csv","w");
 	if (usok1==NULL) return 1;
 	fgets(buff, max_len, usok1);
 	fprintf(usf, buff);
@@ -57,17 +57,43 @@ int main() {
 	if (commitsok1==NULL) return 1;
 	fgets(buff, max_len, commitsok1);
 	fprintf(commitsf, buff); 
-
+	
     USER *arrayU;
 	REPOS *arrayR;
-	int max_len1=400000,Nu,Nr;
+	COMMITS *arrayC;
+	int max_len1=400000,Nu,Nr,Nc,i=0,i1=0,i2=0,r;
 	arrayU=malloc(max_len1*sizeof(struct user));
 	arrayR=malloc(max_len1*sizeof(struct repos));
+	arrayC=malloc(max_len1*sizeof(struct commits));
 	Nu=arrayDinamicoU(usok1,arrayU);
-	exA(commitsok1,commitsint,arrayU,Nu);
-	fclose(commitsint);
-	FILE *commitsint2=fopen("commits-int.csv","r");
+	quicksortU(arrayU,0,Nu-1);
+	/*
+	while (i<Nu){
+		printf("%d\n",arrayU[i]->id);
+		i++;
+	}
+	*/
 	Nr=arrayDinamicoR(reposok1,arrayR);
-	exB(commitsint2,commitsf,arrayR,Nr);
+	quicksortR(arrayR,0,Nr-1);
+	/*
+	while (i1<Nr){
+		printf("%d\n",arrayR[i1]->id);
+		i1++;
+	}
+	*/
+    r=procuraBinariaU(arrayU,0,Nu-1,30438508);
+	printf("%d\n",r);
+	exAeB(commitsok1,commitsf,arrayR,arrayU,Nu,Nr);
+	
+	/*
+	Nc=arrayDinamicoC(commitsok1,arrayC);
+	quicksortC(arrayC,0,Nc-1);
+	
+	while (i2<Nc){
+		printf("%d\n",arrayC[i2]->repo_id);
+		i2++;
+	}
+	*/
+	//exCeD(reposok1,reposf,arrayU,arrayC,Nu,Nc);
 	return 0;
 }
