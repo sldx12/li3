@@ -5,9 +5,9 @@
 #include <ctype.h>
 #include "funcoesAux.c"
 #include "types.h"
-#include "exercicio2.c"
+#include "trees.c"
 #include "exercicio1.c"
-
+#include "exercicio2.c"
 
 //Função principal do programa 
 int main() {
@@ -17,19 +17,19 @@ int main() {
 	FILE *reposOK=fopen("repos-ok.csv", "w");
     FILE *commits=fopen("commits.csv", "r");
 	FILE *commitsOK=fopen("commits-ok.csv", "w");
-    
+   
 	int max_len = 400000;
 	char buff[max_len];
     
 	if (us == NULL) return 1;
 	fgets(buff, max_len, us);
-	fprintf(usOK, buff);
+	fprintf(usOK,"%s", buff);
 	if (repos==NULL) return 1;
 	fgets(buff,max_len,repos);
-	fprintf(reposOK, buff);
+	fprintf(reposOK,"%s", buff);
 	if (commits==NULL) return 1;
 	fgets(buff,max_len,commits);
-	fprintf(commitsOK,buff);
+	fprintf(commitsOK,"%s",buff);
 	final_repos(repos,reposOK);
 	final_users(us, usOK);
 	final_commits(commits,commitsOK);
@@ -47,53 +47,40 @@ int main() {
 	FILE *reposf=fopen("repos-final.csv","w");
 	FILE *commitsok1=fopen("commits-ok.csv","r");
 	FILE *commitsf=fopen("commits-final.csv","w");
-    //FILE *commitsint=fopen("commits-int.csv","w");
 	if (usok1==NULL) return 1;
 	fgets(buff, max_len, usok1);
-	fprintf(usf, buff);
+	fprintf(usf,"%s", buff);
 	if (reposok1==NULL) return 1;
 	fgets(buff, max_len, reposok1);
-	fprintf(reposf, buff);
+	fprintf(reposf,"%s",buff);
 	if (commitsok1==NULL) return 1;
 	fgets(buff, max_len, commitsok1);
-	fprintf(commitsf, buff); 
-	
-    USER *arrayU;
-	REPOS *arrayR;
-	COMMITS *arrayC;
-	int max_len1=400000,Nu,Nr,Nc,i=0,i1=0,i2=0,r;
-	arrayU=malloc(max_len1*sizeof(struct user));
-	arrayR=malloc(max_len1*sizeof(struct repos));
-	arrayC=malloc(max_len1*sizeof(struct commits));
-	Nu=arrayDinamicoU(usok1,arrayU);
-	quicksortU(arrayU,0,Nu-1);
+	fprintf(commitsf,"%s", buff); 
+
+	ABin ABinU=NULL; // arvore binaria que nos dá os ids de todos os users
+	ABin ABinR=NULL; // arvore binaria que nos dá os ids de todos os repos
+	ABin ABinC=NULL;
 	/*
-	while (i<Nu){
-		printf("%d\n",arrayU[i]->id);
-		i++;
+	int arrayR_size=10;
+	REPOS *arrayR=malloc(sizeof(REPOS)*arrayR_size);
+	int i=0;
+	while(fgets(buff,max_len,reposok1)){
+		if (i==arrayR_size) {
+			arrayR_size*=2;
+			arrayR=realloc(arrayR,sizeof(REPOS)*arrayR_size);
+		}
+		arrayR[i].id=giveReposID(buff);
+		insert(&ABinR,arrayR[i].id);
+		arrayR[i].owner_id=giveOwnerID(buff);
+		arrayR[i++].valido=0;
 	}
 	*/
-	Nr=arrayDinamicoR(reposok1,arrayR);
-	quicksortR(arrayR,0,Nr-1);
-	/*
-	while (i1<Nr){
-		printf("%d\n",arrayR[i1]->id);
-		i1++;
-	}
-	*/
-    r=procuraBinariaU(arrayU,0,Nu-1,30438508);
-	printf("%d\n",r);
-	exAeB(commitsok1,commitsf,arrayR,arrayU,Nu,Nr);
-	
-	/*
-	Nc=arrayDinamicoC(commitsok1,arrayC);
-	quicksortC(arrayC,0,Nc-1);
-	
-	while (i2<Nc){
-		printf("%d\n",arrayC[i2]->repo_id);
-		i2++;
-	}
-	*/
-	//exCeD(reposok1,reposf,arrayU,arrayC,Nu,Nc);
+	ids(usok1,&ABinU);
+	rps(reposok1,&ABinR);
+	cmt(commitsok1,&ABinC);
+	fclose(reposOK);
+	fopen("repos-ok.csv", "r");
+    exAeB(commitsok1,commitsf,&ABinR,&ABinU);
+	exCeD(reposok1,reposf,&ABinU,&ABinC);
 	return 0;
 }
