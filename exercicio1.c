@@ -34,7 +34,7 @@ void final_repos(FILE *s,FILE *d){
         char *aux = strdup(strsep(&buff1,";\r\n"));
         int x3=nonNegativeInt(aux);
         if(x3==1); else Bool=0;
-        if(Bool==1) fprintf(d,buff);
+        if(Bool==1) fprintf(d,"%s",buff);
         Bool=1;
     }
 }
@@ -59,7 +59,7 @@ void final_commits(FILE *s, FILE *d) {
         temp=(strdup(strsep(&buff1,"\n")));
 
         if (Bool==1) {
-            fprintf(d,buff);
+            fprintf(d,"%s",buff);
         }
         colunas=1;
         Bool=1;
@@ -86,7 +86,7 @@ void final_users(FILE *s, FILE *d) {
         char *aux = strdup(strsep(&buff1,";\n\r"));
         if(nonNegativeInt(aux)==1); else Bool=0;
 
-        if (Bool==1) fprintf(d,buff);
+        if (Bool==1) fprintf(d,"%s",buff);
         Bool=1;
     }
 }
