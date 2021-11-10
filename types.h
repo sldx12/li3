@@ -1,22 +1,25 @@
 #ifndef TYPES_H_
 #define TYPES_H_
 
-struct user {
-	int *id;
-};
+typedef struct repos{
+	int  id;
+	int  owner_id;
+    int  valido;
+}REPOS;
 
-typedef struct user* USER;
-
-struct repos{
-	int  *id;
-	int  *owner_id;
-};
-typedef struct repos* REPOS;
-struct commits{
+ typedef struct commits{
 	int repo_id;
 	int author_id;
 	int committer_id;
-};
-typedef struct commits* COMMITS;
-
+}COMMITS;
+typedef struct nodeR{
+    REPOS *val;
+    struct nodeR *left;
+    struct nodeR *right;
+} *ABinR;
+typedef struct node{
+    int val;
+    struct node *left;
+    struct node *right;
+} *ABin;
 #endif
