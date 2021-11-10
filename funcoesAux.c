@@ -32,6 +32,7 @@ int mystrcompare(char v[],char t[]) {
     }
     return r;
 }
+//Sica
 // Função que vê se o type está correto (Só pode ser Bot,Organization,User)
 int type_correct(char v[]){
     int resultado=0;
@@ -46,7 +47,28 @@ int bool_correct(char v[]) {
     else return 0;
     return resultado;
 }
-
+//Função que testa se uma lista é valida.Caso seja dá o seu comprimento, caso não seja dá -1 (inacaba)
+int lista_valida(char v[]){
+    v=v+1;// Para retirar o '[';
+    int c=0; // Para calcular o comprimento
+    char *temp;
+    char *temp1;
+    temp=strdup(v);
+    temp1=temp;
+    if (v[0]==']') return 0;
+    else{
+      while ((temp1=strsep(&temp,","))!=NULL){
+        //printf("%s\n",temp1);
+        //printf("%d\n",atoi(temp1));
+          if (atoi(temp1)>0) {
+            c++;
+          }
+          else return -1;
+      }
+    }
+    return c;
+}
+//PARTIM
 // função que confirma se uma data é válida
 int check_date(char *d) { // 07-04-2005 <= d <= current_time
     time_t rawtime;
@@ -58,7 +80,7 @@ int check_date(char *d) { // 07-04-2005 <= d <= current_time
     timeinfo = localtime(&rawtime);
 
     memset(&tm, 0, sizeof(tm));
-    strptime(d, "%Y-%m-%d %H:%M:%S", &tm);
+    strptime(d,"%Y-%m-%d %H:%M:%S", &tm);
     int year = tm.tm_year + 1900;
     int mon = tm.tm_mon + 1;
     int day = tm.tm_mday;
@@ -81,30 +103,10 @@ int check_date(char *d) { // 07-04-2005 <= d <= current_time
     if (year == c_year && mon == c_mon && day == c_day && hour == c_hour && min < c_min  && sec<c_sec) return 1;
     return 0;
 }
+
 //Função que vê se uma string é valida
 int string_valida(char v[]){
     if (v[0]=='\0') return 0;
     else return 1;
 }
 
-//Função que testa se uma lista é valida.Caso seja dá o seu comprimento, caso não seja dá -1 (inacaba)
-int lista_valida(char v[]){
-    v=v+1;// Para retirar o '[';
-    int c=0; // Para calcular o comprimento
-    char *temp;
-    char *temp1;
-    temp=strdup(v);
-    temp1=temp;
-    if (v[0]==']') return 0;
-    else{
-      while ((temp1=strsep(&temp,","))!=NULL){
-        //printf("%s\n",temp1);
-        //printf("%d\n",atoi(temp1));
-          if (atoi(temp1)>0) {
-            c++;
-          }
-          else return -1;
-      }
-    }
-    return c;
-}
