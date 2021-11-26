@@ -1,9 +1,7 @@
-guiao-1: exercicio1.c exercicio2.c funcoesAux.c 
-         gcc exercicio1.c funcoesAux.c -g exercicio2.c -o guiao-1
-clean:
-      rm -f exercicio-1
-	  rm -f guiao-1.o
-	  rm -f guiao-1
+SHELL=/bin/sh
+FLAGS=-g -Wall 
+CC=gcc
+OBJS= exercicio1.c exercicio2.c funcoesAux.c giveIDs.c main.c trees.c types.h
 
-realy clean:clean
-           rm -f guiao-1
+guiao1:
+${CC} ${FLAGS} ${OBJS}

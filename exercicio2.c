@@ -4,7 +4,7 @@
 #include <time.h>
 #include <ctype.h>
 #include "types.h"
-
+#include "exercicio2.h"
 //Função final dos commits
 void exAeB(FILE *s,FILE *d,ABin *r,ABin *u){
 	int max_len=2000,AuthorID,CommitterID,RepoID,rAID,rCID,rRID;

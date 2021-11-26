@@ -3,11 +3,14 @@
 #include <string.h>
 #include <time.h>
 #include <ctype.h>
-#include "funcoesAux.c"
+#include "funcoesAux.h"
+#include "giveIDs.h"
 #include "types.h"
-#include "trees.c"
-#include "exercicio1.c"
-#include "exercicio2.c"
+#include "trees.h"
+#include "exercicio1.h"
+#include "exercicio2.h"
+#include "parsing.h"
+#include "treesV2.h"
 
 //Função principal do programa 
 int main() {
@@ -40,8 +43,8 @@ int main() {
 	fclose(reposOK);
 	fclose(commits);
 	fclose(commitsOK);
-	
-	FILE *usok1=fopen("users-ok.csv","r");
+
+		FILE *usok1=fopen("users-ok.csv","r");
 	FILE *usf=fopen("users-final.csv","w");
 	FILE *reposok1=fopen("repos-ok.csv","r");
 	FILE *reposf=fopen("repos-final.csv","w");
@@ -60,27 +63,57 @@ int main() {
 	ABin ABinU=NULL; // arvore binaria que nos dá os ids de todos os users
 	ABin ABinR=NULL; // arvore binaria que nos dá os ids de todos os repos
 	ABin ABinC=NULL;
-	/*
-	int arrayR_size=10;
-	REPOS *arrayR=malloc(sizeof(REPOS)*arrayR_size);
-	int i=0;
-	while(fgets(buff,max_len,reposok1)){
-		if (i==arrayR_size) {
-			arrayR_size*=2;
-			arrayR=realloc(arrayR,sizeof(REPOS)*arrayR_size);
-		}
-		arrayR[i].id=giveReposID(buff);
-		insert(&ABinR,arrayR[i].id);
-		arrayR[i].owner_id=giveOwnerID(buff);
-		arrayR[i++].valido=0;
-	}
-	*/
+	
 	ids(usok1,&ABinU);
 	rps(reposok1,&ABinR);
 	cmt(commitsok1,&ABinC);
+
 	fclose(reposOK);
 	fopen("repos-ok.csv", "r");
-    exAeB(commitsok1,commitsf,&ABinR,&ABinU);
+	fclose(commitsOK);
+	FILE *commitsok2=fopen("commits-ok.csv", "r");
+	fclose(commitsf);	
+	FILE *commitsf2=fopen("commits-final.csv","w");
+	FILE *usok2=fopen("users-ok.csv","r");
+	fclose(usf);
+	FILE *usf2=fopen("users-final.csv","w");
+	char buffs[max_len];
+	while (fgets(buffs,max_len,usok2)) {
+		fprintf(usf2,"%s",buffs);
+	}
+
+    exAeB(commitsok2,commitsf2,&ABinR,&ABinU);
 	exCeD(reposok1,reposf,&ABinU,&ABinC);
+//Parte da main responsável pelo guião 2 
+	FILE *commitsf3=fopen("commits-final.csv","r");
+	FILE *usf3=fopen("users-final.csv","r");
+	FILE *reposf3=fopen("repos-final.csv","r");
+    BSTU abinUsers=NULL;
+	BSTR abinRepos=NULL;
+	BSTC abinCommits=NULL;
+	int nBot;
+	int nUser;
+    int nOrg;
+	int NumeroDeRepos;
+	int NumeroDeUsers;
+	int NumeroDeCommits;
+	int QueryID4;
+	fgets(buffs,max_len,usf3);
+	printf("%s\n",buffs);
+	NumeroDeUsers=readUsers(usf3,abinUsers,&nBot,&nUser,&nOrg);
+	NumeroDeRepos=readRepos(reposf3,abinRepos);
+	NumeroDeCommits=readCommits(commitsf3,abinCommits);
+	QueryID4=NumeroDeCommits/NumeroDeUsers;
+	printf("%d||",nBot);
+	printf("%d||",nUser);
+	printf("%d\n",nOrg);
+	printf("%d||",NumeroDeCommits);
+	printf("%d||",NumeroDeRepos);
+	printf("%d\n",NumeroDeUsers);
+	printf("%d\n",QueryID4);
+	//Query id 1 -> Dar fprintf no ficheiro resultado das queries dos nBot,nUser,nOrg;     FEITA
+	//Query id 2 -> Dar fprintf no ficheiro resultado das queries da divisão entre total de colaborados(users que são author_id e committer_id) e o NumeroDeRepos; POR FAZER
+	//Query id 3 -> Dar fprintf no ficheiro resultado das queries com número de repositórios contendo bots como colaboradores; POR FAZER
+	//Query id 4 -> Dar fprintf no ficheiro resultado das queries da divisão entre NumerodeCommits e o NumerodeUsers    FEITA
 	return 0;
 }

@@ -3,6 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include "types.h"
+#include "giveIDs.h"
 
 int giveID(char v[]){
     int r;
@@ -52,6 +53,7 @@ int giveReposID(char v[]){
     r=atoi(temp);
     return r;
 }
+
 int giveOwnerID(char v[]){
     int r;
     char *buff,*buff1;

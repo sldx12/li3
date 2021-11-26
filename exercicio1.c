@@ -4,7 +4,7 @@
 #include <time.h>
 #include <ctype.h>
 #include "types.h"
-
+#include "exercicio1.h"
 void final_repos(FILE *s,FILE *d){
     int Bool =1, max_len = 400000;
     char buff[max_len];

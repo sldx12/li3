@@ -2,25 +2,18 @@
 #include <stdlib.h>
 #include <string.h>
 #include "types.h"
-#include "giveIDs.c"
+#include "giveIDs.h"
+#include "trees.h"
+#include "parsing.h"
+struct node{
+    int val;
+    struct node *left;
+    struct node *right;
+};
+
 // rotate binary search tree to the Left
 void rotateLeft(ABin *a){
 	ABin b = (*a)->right;
-	(*a)->right = b->left;
-	b->left = *a;
-	*a = b;
-}
-
-
-// rotate binary search tree to the Right
-void rotateRightRepos(ABinR *a){
-	ABinR b = (*a)->left;
-	(*a)->left = b->right;
-	b->right = *a;
-	*a = b;
-}
-void rotateLeftRepos(ABinR *a){
-	ABinR b = (*a)->right;
 	(*a)->right = b->left;
 	b->left = *a;
 	*a = b;
@@ -39,8 +32,6 @@ void rotateRight(ABin *a){
 int max(int a, int b){
     return (a > b)? a : b;
 }
-
-
 // gives height of the binary search tree
 int height(ABin a){
     if(a == NULL) return 0;
@@ -63,23 +54,6 @@ void insert(ABin *a, int x){
     else{
         insert (&((*a)->right),x);
         rotateLeft(a);
-    }  
-}
-void insertRepo(ABinR *a, REPOS *x){
-    if(!(*a)){
-        ABinR new = malloc(sizeof(ABinR*));
-        new->val = x;
-        new->left = NULL;
-        new->right = NULL;
-        (*a)=new;
-    }
-    else if((*a)->val->id>(*x).id){
-        insertRepo (&((*a)->left),x);
-        rotateRightRepos(a);
-    }
-    else{
-        insertRepo (&((*a)->right),x);
-        rotateLeftRepos(a);
     }  
 }
 //Search for a number in a binary search tree 
@@ -114,3 +88,4 @@ void cmt(FILE *commitsok1,ABin *c){
         insert(c,giveReposID(buff));
     }
 }
+
