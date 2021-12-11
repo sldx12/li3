@@ -10,17 +10,20 @@
 #include "exercicio1.h"
 #include "exercicio2.h"
 #include "parsing.h"
-#include "treesV2.h"
-
+#include "QueryID3.h"
+#include "QueryID5.h"
+#include "QueryID6.h"
+#include "QueryID7.h"
+#include "QueryID8.h"
 //Função principal do programa 
 int main() {
+	/*
 	FILE *us = fopen("users.csv", "r");
 	FILE *usOK = fopen("users-ok.csv", "w");
 	FILE *repos=fopen("repos.csv", "r");
 	FILE *reposOK=fopen("repos-ok.csv", "w");
     FILE *commits=fopen("commits.csv", "r");
 	FILE *commitsOK=fopen("commits-ok.csv", "w");
-   
 	int max_len = 400000;
 	char buff[max_len];
     
@@ -84,36 +87,84 @@ int main() {
 
     exAeB(commitsok2,commitsf2,&ABinR,&ABinU);
 	exCeD(reposok1,reposf,&ABinU,&ABinC);
-//Parte da main responsável pelo guião 2 
-	FILE *commitsf3=fopen("commits-final.csv","r");
-	FILE *usf3=fopen("users-final.csv","r");
-	FILE *reposf3=fopen("repos-final.csv","r");
-    BSTU abinUsers=NULL;
-	BSTR abinRepos=NULL;
-	BSTC abinCommits=NULL;
-	int nBot;
+	fclose(commitsok2);
+	fclose(commitsf2);
+	fclose(usok2);
+	fclose(usf2);
+	fclose(reposok1);
+	fclose(reposf);
+*/
+///////////////////////////Guião Parte 2 
+    FILE *readUser=fopen("users-final2.csv","r");
+	FILE *readRepos=fopen("repos-final2.csv","r");
+	FILE *readCommits=fopen("commits-final2.csv","r");
+    //FILE *readCommands=fopen("commands.txt","r");
+	int max_len=500000;
+	char buff[max_len];
+	if (readUser==NULL) return 1;
+	fgets(buff, max_len,readUser);
+	if (readRepos==NULL) return 1;
+	fgets(buff, max_len, readRepos);
+	if (readCommits==NULL) return 1;
+	fgets(buff, max_len, readCommits);
+   
+	aUsers aU=malloc(getsizeofU(aU));
+	aRepos aR=malloc(getsizeofR(aR));
+	aCommit aC=malloc(getsizeofC(aC));
+    int nBot;
 	int nUser;
-    int nOrg;
-	int NumeroDeRepos;
-	int NumeroDeUsers;
-	int NumeroDeCommits;
-	int QueryID4;
-	fgets(buffs,max_len,usf3);
-	printf("%s\n",buffs);
-	NumeroDeUsers=readUsers(usf3,abinUsers,&nBot,&nUser,&nOrg);
-	NumeroDeRepos=readRepos(reposf3,abinRepos);
-	NumeroDeCommits=readCommits(commitsf3,abinCommits);
-	QueryID4=NumeroDeCommits/NumeroDeUsers;
-	printf("%d||",nBot);
-	printf("%d||",nUser);
-	printf("%d\n",nOrg);
-	printf("%d||",NumeroDeCommits);
-	printf("%d||",NumeroDeRepos);
-	printf("%d\n",NumeroDeUsers);
-	printf("%d\n",QueryID4);
-	//Query id 1 -> Dar fprintf no ficheiro resultado das queries dos nBot,nUser,nOrg;     FEITA
-	//Query id 2 -> Dar fprintf no ficheiro resultado das queries da divisão entre total de colaborados(users que são author_id e committer_id) e o NumeroDeRepos; POR FAZER
-	//Query id 3 -> Dar fprintf no ficheiro resultado das queries com número de repositórios contendo bots como colaboradores; POR FAZER
-	//Query id 4 -> Dar fprintf no ficheiro resultado das queries da divisão entre NumerodeCommits e o NumerodeUsers    FEITA
+	int nOrg;
+	float nColab;
+    float NdeUs,NdeRep,NdeCom;
+	float QueryId4;
+	float QueryId2;
+	int QueryId3;
+
+	NdeCom=RCommit(readCommits,aC);
+	quickSortC(aC,0,celulasOcupC(aC)-1);
+	NdeUs=RUsers(readUser,aU,aC,&nBot,&nUser,&nOrg,&nColab);
+	quickSortU(aU,0,celulasOcupU(aU)-1);
+	NdeRep=RRepos(readRepos,aR);
+	quickSortR(aR,0,celulasOcupR(aR)-1);
+	QueryId4=NdeCom/NdeUs;
+    QueryId2=nColab/NdeRep; 
+	QueryId3=NdeReposComBot(aC,aU);
+
+    //Query Estatisiticas
+	printf("Numero Total de users:%.0f\nNumero Total de Repos:%.0f\nNumero Total de committs:%.0f\n\n",NdeUs,NdeRep,NdeCom);
+	//Query ID 1
+	printf("Query ID 1:\nBot:%d\nOrganization:%d\nUser:%d\n\n",nBot,nOrg,nUser);
+	//Query ID 2
+	printf("Query ID 2:\n%.2f\n\n",QueryId2);
+	//Query ID 3
+	printf("Query ID 3:\n%d\n\n",QueryId3);
+	//Query ID 4 
+	printf("Query ID 4:\n%.2f\n\n",QueryId4);
+
+    //Queries Parametrizáveis 
+	printf("Query ID 5:\n");  //Query id 5 está feita falta ver o problema dos prints 
+    llRes listaResultadosQ5=NULL;
+	char dateI[11]="2005-08-17";
+	char dateF[11]="2018-08-19";
+	int N=4;
+	utilizadoresAtivos(aU,aC,dateI,dateF,listaResultadosQ5,N);
+	//printListaQ5(listaResultadosQ5,N);
+	printf("Query ID 6:\n");
+    llResQ6 listaResultadosQ6=NULL;
+    char language[3]="C#";
+	CommitsDadosPorLinguagem(aU,aC,aR,listaResultadosQ6,language);
+    //printListaQ6(listaResultadosQ6,N);
+	printf("Query ID 7:\n");
+	llResQ7 listaResultadosQ7=NULL;
+	char date[11]="2021-12-23";
+	reposInativos(aC,aR,date,listaResultadosQ7);
+	printf("Query ID 8:\n");
+	llResQ8 listaResultadosQ8=NULL;
+    linguagensMaisUtilizadas(aC,aR,listaResultadosQ8);
+	printfLista(listaResultadosQ8);
+	freeaUsers(aU);
+	freeaRepos(aR);
+	freeaCommit(aC);
+
 	return 0;
 }
